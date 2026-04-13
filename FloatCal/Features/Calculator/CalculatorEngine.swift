@@ -28,6 +28,11 @@ class CalculatorEngine {
         }
 
         if isOperator(token) {
+            if token == "−", let last = expression.last, last == "(" || last == "×" || last == "÷" {
+                expression += token
+                return
+            }
+
             if !expression.isEmpty, let last = expression.last {
                 if isOperator(String(last)) {
                     expression.removeLast()
@@ -136,12 +141,25 @@ class CalculatorEngine {
             if result.truncatingRemainder(dividingBy: 1) == 0 {
                 return String(format: "%.0f", result)
             } else {
-                let formatted = String(format: "%.8f", result)
-                return String(formatted.trimmingCharacters(in: CharacterSet(charactersIn: "0")).trimmingCharacters(in: CharacterSet(charactersIn: ".")))
+                return formatDecimal(result)
             }
         } catch {
             return nil
         }
+    }
+
+    private func formatDecimal(_ value: Double) -> String {
+        var formatted = String(format: "%.8f", value)
+
+        while formatted.contains(".") && formatted.hasSuffix("0") {
+            formatted.removeLast()
+        }
+
+        if formatted.hasSuffix(".") {
+            formatted.removeLast()
+        }
+
+        return formatted
     }
 
     private func evaluate(_ expression: String) throws -> Double {
@@ -164,8 +182,7 @@ class CalculatorEngine {
     }
 
     private func evaluateSimple(_ expr: String) throws -> Double {
-        var expression = expr.trimmingCharacters(in: .whitespaces)
-
+        let expression = expr.trimmingCharacters(in: .whitespaces)
         let tokens = tokenize(expression)
 
         guard !tokens.isEmpty else { return 0 }
@@ -173,60 +190,61 @@ class CalculatorEngine {
         var values: [Double] = []
         var ops: [String] = []
 
-        var i = 0
-        while i < tokens.count {
-            let token = tokens[i]
-
-            if token == "+" {
-                ops.append("+")
-            } else if token == "-" {
-                ops.append("-")
-            } else if token == "*" {
-                var left = values.removeLast()
-                i += 1
-                if i < tokens.count {
-                    if let right = Double(tokens[i]) {
-                        left = left * right
-                    } else if tokens[i] == "-" {
-                        i += 1
-                        if i < tokens.count, let right = Double(tokens[i]) {
-                            left = left * (-right)
-                        }
-                    }
-                }
-                values.append(left)
-                continue
-            } else if token == "/" {
-                var left = values.removeLast()
-                i += 1
-                if i < tokens.count {
-                    if let right = Double(tokens[i]), right != 0 {
-                        left = left / right
-                    } else if tokens[i] == "-" {
-                        i += 1
-                        if i < tokens.count, let right = Double(tokens[i]), right != 0 {
-                            left = left / (-right)
-                        }
-                    }
-                }
-                values.append(left)
-                continue
-            } else if let num = Double(token) {
-                values.append(num)
+        func precedence(of op: String) -> Int {
+            switch op {
+            case "*", "/":
+                return 2
+            case "+", "-":
+                return 1
+            default:
+                return 0
             }
-            i += 1
         }
 
-        var result = values.first ?? 0
-
-        for (index, op) in ops.enumerated() {
-            if index + 1 < values.count {
-                if op == "+" {
-                    result = values[index] + values[index + 1]
-                } else if op == "-" {
-                    result = values[index] - values[index + 1]
-                }
+        func applyTopOperator() throws {
+            guard let op = ops.popLast(), values.count >= 2 else {
+                throw NSError(domain: "Calculator", code: 2)
             }
+
+            let rhs = values.removeLast()
+            let lhs = values.removeLast()
+
+            switch op {
+            case "+":
+                values.append(lhs + rhs)
+            case "-":
+                values.append(lhs - rhs)
+            case "*":
+                values.append(lhs * rhs)
+            case "/":
+                guard rhs != 0 else {
+                    throw NSError(domain: "Calculator", code: 3)
+                }
+                values.append(lhs / rhs)
+            default:
+                throw NSError(domain: "Calculator", code: 4)
+            }
+        }
+
+        for token in tokens {
+            if let num = Double(token) {
+                values.append(num)
+            } else if ["+", "-", "*", "/"].contains(token) {
+                while let top = ops.last, precedence(of: top) >= precedence(of: token) {
+                    try applyTopOperator()
+                }
+                ops.append(token)
+            } else {
+                throw NSError(domain: "Calculator", code: 5)
+            }
+        }
+
+        while !ops.isEmpty {
+            try applyTopOperator()
+        }
+
+        guard values.count == 1, let result = values.first else {
+            throw NSError(domain: "Calculator", code: 6)
         }
 
         return result
@@ -241,7 +259,7 @@ class CalculatorEngine {
 
             if char.isNumber || char == "." {
                 current.append(char)
-            } else if char == "-" && (tokens.isEmpty || tokens.last == "(" || tokens.last == "+" || tokens.last == "-" || tokens.last == "*" || tokens.last == "/") {
+            } else if char == "-" && current.isEmpty && (tokens.isEmpty || tokens.last == "(" || tokens.last == "+" || tokens.last == "-" || tokens.last == "*" || tokens.last == "/") {
                 current.append(char)
             } else {
                 if !current.isEmpty {

@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		2BF92A382F88DAED00A25C38 /* FloatCal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloatCal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D42F88DAED00A25C38 /* FloatCalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FloatCalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +17,22 @@
 			path = FloatCal;
 			sourceTree = "<group>";
 		};
+		A1B2C3D52F88DAED00A25C38 /* FloatCalTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FloatCalTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2BF92A352F88DAED00A25C38 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D62F88DAED00A25C38 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				2BF92A3A2F88DAED00A25C38 /* FloatCal */,
+				A1B2C3D52F88DAED00A25C38 /* FloatCalTests */,
 				2BF92A392F88DAED00A25C38 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				2BF92A382F88DAED00A25C38 /* FloatCal.app */,
+				A1B2C3D42F88DAED00A25C38 /* FloatCalTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,7 +85,48 @@
 			productReference = 2BF92A382F88DAED00A25C38 /* FloatCal.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A1B2C3D72F88DAED00A25C38 /* FloatCalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3DE2F88DAED00A25C38 /* Build configuration list for PBXNativeTarget "FloatCalTests" */;
+			buildPhases = (
+				A1B2C3D82F88DAED00A25C38 /* Sources */,
+				A1B2C3D62F88DAED00A25C38 /* Frameworks */,
+				A1B2C3D92F88DAED00A25C38 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1B2C3DD2F88DAED00A25C38 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A1B2C3D52F88DAED00A25C38 /* FloatCalTests */,
+			);
+			name = FloatCalTests;
+			packageProductDependencies = (
+			);
+			productName = FloatCalTests;
+			productReference = A1B2C3D42F88DAED00A25C38 /* FloatCalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
+
+/* Begin PBXContainerItemProxy section */
+		A1B2C3DB2F88DAED00A25C38 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2BF92A302F88DAED00A25C38 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2BF92A372F88DAED00A25C38;
+			remoteInfo = FloatCal;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		A1B2C3DD2F88DAED00A25C38 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2BF92A372F88DAED00A25C38 /* FloatCal */;
+			targetProxy = A1B2C3DB2F88DAED00A25C38 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXProject section */
 		2BF92A302F88DAED00A25C38 /* Project object */ = {
@@ -82,6 +138,10 @@
 				TargetAttributes = {
 					2BF92A372F88DAED00A25C38 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					A1B2C3D72F88DAED00A25C38 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 2BF92A372F88DAED00A25C38;
 					};
 				};
 			};
@@ -100,6 +160,7 @@
 			projectRoot = "";
 			targets = (
 				2BF92A372F88DAED00A25C38 /* FloatCal */,
+				A1B2C3D72F88DAED00A25C38 /* FloatCalTests */,
 			);
 		};
 /* End PBXProject section */
@@ -112,10 +173,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1B2C3D92F88DAED00A25C38 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2BF92A342F88DAED00A25C38 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1B2C3D82F88DAED00A25C38 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -303,6 +378,60 @@
 			};
 			name = Release;
 		};
+		A1B2C3DC2F88DAED00A25C38 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.FloatCalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FloatCal.app/Contents/MacOS/FloatCal";
+				TEST_TARGET_NAME = FloatCal;
+			};
+			name = Debug;
+		};
+		A1B2C3DF2F88DAED00A25C38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.FloatCalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FloatCal.app/Contents/MacOS/FloatCal";
+				TEST_TARGET_NAME = FloatCal;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -320,6 +449,15 @@
 			buildConfigurations = (
 				2BF92A452F88DAF000A25C38 /* Debug */,
 				2BF92A462F88DAF000A25C38 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3DE2F88DAED00A25C38 /* Build configuration list for PBXNativeTarget "FloatCalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3DC2F88DAED00A25C38 /* Debug */,
+				A1B2C3DF2F88DAED00A25C38 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

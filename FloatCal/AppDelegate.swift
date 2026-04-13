@@ -15,6 +15,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var calculatorViewModel = CalculatorViewModel()
     private let settings = AppSettings.shared
     private var statusItem: NSStatusItem?
+    private let floatingWindowOriginXKey = "floatingWindowOriginX"
+    private let floatingWindowOriginYKey = "floatingWindowOriginY"
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         setupFloatingWindow()
@@ -57,8 +59,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.contentView = hostingView
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        window.delegate = self
 
-        window.center()
+        if let savedOrigin = savedFloatingWindowOrigin() {
+            window.setFrameOrigin(savedOrigin)
+        } else {
+            window.center()
+        }
 
         floatingWindow = window
     }
@@ -99,9 +106,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let window = floatingWindow else { return }
 
         if window.isVisible {
+            saveFloatingWindowOrigin(window.frame.origin)
             window.orderOut(nil)
         } else {
-            window.center()
+            if let savedOrigin = savedFloatingWindowOrigin() {
+                window.setFrameOrigin(savedOrigin)
+            } else {
+                window.center()
+            }
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
         }
@@ -144,9 +156,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         settingsWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
+
+    private func saveFloatingWindowOrigin(_ origin: NSPoint) {
+        UserDefaults.standard.set(origin.x, forKey: floatingWindowOriginXKey)
+        UserDefaults.standard.set(origin.y, forKey: floatingWindowOriginYKey)
+    }
+
+    private func savedFloatingWindowOrigin() -> NSPoint? {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: floatingWindowOriginXKey) != nil,
+              defaults.object(forKey: floatingWindowOriginYKey) != nil else {
+            return nil
+        }
+
+        return NSPoint(
+            x: defaults.double(forKey: floatingWindowOriginXKey),
+            y: defaults.double(forKey: floatingWindowOriginYKey)
+        )
+    }
 }
 
 extension AppDelegate: NSWindowDelegate {
+    func windowDidMove(_ notification: Notification) {
+        if let window = notification.object as? NSWindow, window == floatingWindow {
+            saveFloatingWindowOrigin(window.frame.origin)
+        }
+    }
+
     func windowWillClose(_ notification: Notification) {
         if let window = notification.object as? NSWindow, window == settingsWindow {
             // Drop strong reference after the window actually closes
