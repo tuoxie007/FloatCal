@@ -57,6 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isMovableByWindowBackground = true
         window.contentView = hostingView
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        window.delegate = self
 
         window.center()
 
@@ -151,6 +152,14 @@ extension AppDelegate: NSWindowDelegate {
         if let window = notification.object as? NSWindow, window == settingsWindow {
             // Drop strong reference after the window actually closes
             settingsWindow = nil
+        }
+    }
+
+    func windowDidResignKey(_ notification: Notification) {
+        if let window = notification.object as? NSWindow, window == floatingWindow {
+            if settings.hideOnBlur {
+                window.orderOut(nil)
+            }
         }
     }
 }

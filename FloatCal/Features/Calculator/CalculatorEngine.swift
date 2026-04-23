@@ -75,7 +75,10 @@ class CalculatorEngine {
 
     private func toggleSign() {
         if let lastNumber = getLastNumber() {
-            if lastNumber.hasPrefix("-") {
+            if lastNumber.hasPrefix("(-") && lastNumber.hasSuffix(")") {
+                let newNumber = String(lastNumber.dropFirst(2).dropLast())
+                expression = String(expression.dropLast(lastNumber.count)) + newNumber
+            } else if lastNumber.hasPrefix("-") {
                 let newNumber = String(lastNumber.dropFirst())
                 expression = String(expression.dropLast(lastNumber.count)) + newNumber
             } else {
@@ -85,6 +88,34 @@ class CalculatorEngine {
     }
 
     private func getLastNumber() -> String? {
+        // Check for "(-number)" pattern at the end
+        if expression.hasSuffix(")") {
+            var depth = 1
+            var index = expression.index(before: expression.endIndex)
+            var foundStart = false
+            while index > expression.startIndex {
+                index = expression.index(before: index)
+                let char = expression[index]
+                if char == ")" {
+                    depth += 1
+                } else if char == "(" {
+                    depth -= 1
+                    if depth == 0 {
+                        foundStart = true
+                        break
+                    }
+                }
+            }
+            if foundStart {
+                let candidate = String(expression[index...])
+                if candidate.hasPrefix("(-"),
+                   candidate.hasSuffix(")"),
+                   Double(candidate.dropFirst(2).dropLast()) != nil {
+                    return candidate
+                }
+            }
+        }
+
         var number = ""
         for char in expression.reversed() {
             if char == "-" && number.isEmpty { continue }
@@ -165,9 +196,7 @@ class CalculatorEngine {
 
     private func evaluateSimple(_ expr: String) throws -> Double {
         var expression = expr.trimmingCharacters(in: .whitespaces)
-
         let tokens = tokenize(expression)
-
         guard !tokens.isEmpty else { return 0 }
 
         var values: [Double] = []
@@ -177,55 +206,71 @@ class CalculatorEngine {
         while i < tokens.count {
             let token = tokens[i]
 
-            if token == "+" {
-                ops.append("+")
-            } else if token == "-" {
-                ops.append("-")
+            if token == "+" || token == "-" {
+                ops.append(token)
+                i += 1
             } else if token == "*" {
+                guard !values.isEmpty else {
+                    throw NSError(domain: "Calculator", code: 1)
+                }
                 var left = values.removeLast()
                 i += 1
-                if i < tokens.count {
-                    if let right = Double(tokens[i]) {
-                        left = left * right
-                    } else if tokens[i] == "-" {
-                        i += 1
-                        if i < tokens.count, let right = Double(tokens[i]) {
-                            left = left * (-right)
-                        }
+                guard i < tokens.count else {
+                    throw NSError(domain: "Calculator", code: 1)
+                }
+                if let right = Double(tokens[i]) {
+                    left = left * right
+                } else if tokens[i] == "-" {
+                    i += 1
+                    guard i < tokens.count, let right = Double(tokens[i]) else {
+                        throw NSError(domain: "Calculator", code: 1)
                     }
+                    left = left * (-right)
+                } else {
+                    throw NSError(domain: "Calculator", code: 1)
                 }
                 values.append(left)
-                continue
+                i += 1
             } else if token == "/" {
+                guard !values.isEmpty else {
+                    throw NSError(domain: "Calculator", code: 1)
+                }
                 var left = values.removeLast()
                 i += 1
-                if i < tokens.count {
-                    if let right = Double(tokens[i]), right != 0 {
-                        left = left / right
-                    } else if tokens[i] == "-" {
-                        i += 1
-                        if i < tokens.count, let right = Double(tokens[i]), right != 0 {
-                            left = left / (-right)
-                        }
+                guard i < tokens.count else {
+                    throw NSError(domain: "Calculator", code: 1)
+                }
+                if let right = Double(tokens[i]), right != 0 {
+                    left = left / right
+                } else if tokens[i] == "-" {
+                    i += 1
+                    guard i < tokens.count, let right = Double(tokens[i]), right != 0 else {
+                        throw NSError(domain: "Calculator", code: 1)
                     }
+                    left = left / (-right)
+                } else {
+                    throw NSError(domain: "Calculator", code: 1)
                 }
                 values.append(left)
-                continue
+                i += 1
             } else if let num = Double(token) {
                 values.append(num)
+                i += 1
+            } else {
+                throw NSError(domain: "Calculator", code: 1)
             }
-            i += 1
         }
 
         var result = values.first ?? 0
-
-        for (index, op) in ops.enumerated() {
-            if index + 1 < values.count {
+        var valueIndex = 1
+        for op in ops {
+            if valueIndex < values.count {
                 if op == "+" {
-                    result = values[index] + values[index + 1]
+                    result += values[valueIndex]
                 } else if op == "-" {
-                    result = values[index] - values[index + 1]
+                    result -= values[valueIndex]
                 }
+                valueIndex += 1
             }
         }
 

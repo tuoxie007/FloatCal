@@ -97,6 +97,8 @@ struct CalculatorButtonView: View {
             return Color(NSColor.controlColor)
         } else if button.isOperator {
             return Color.orange.opacity(0.8)
+        } else if button.isDigit {
+            return Color(NSColor.lightGray)
         } else {
             return Color(NSColor.controlColor).opacity(0.5)
         }

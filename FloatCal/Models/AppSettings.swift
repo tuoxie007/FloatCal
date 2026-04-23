@@ -1,6 +1,7 @@
 import Foundation
 import Carbon
 import Combine
+import ServiceManagement
 
 struct HotKeySettings: Codable, Equatable {
     var keyCode: UInt32
@@ -120,6 +121,8 @@ class AppSettings: ObservableObject {
 
         self.launchAtLogin = UserDefaults.standard.bool(forKey: launchAtLoginKey)
         self.hideOnBlur = UserDefaults.standard.object(forKey: hideOnBlurKey) as? Bool ?? true
+
+        updateLaunchAtLogin()
     }
 
     private func save() {
@@ -132,7 +135,20 @@ class AppSettings: ObservableObject {
 
     private func updateLaunchAtLogin() {
         if #available(macOS 13.0, *) {
-            // Use SMAppService for macOS 13+
+            let service = SMAppService.mainApp
+            do {
+                if launchAtLogin {
+                    if service.status == .notRegistered {
+                        try service.register()
+                    }
+                } else {
+                    if service.status == .enabled {
+                        try service.unregister()
+                    }
+                }
+            } catch {
+                print("Failed to update launch at login: \(error)")
+            }
         }
     }
 }

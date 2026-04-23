@@ -177,4 +177,13 @@ enum CalculatorButton: String, Identifiable {
             return false
         }
     }
+
+    var isDigit: Bool {
+        switch self {
+        case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine:
+            return true
+        default:
+            return false
+        }
+    }
 }
